@@ -45,19 +45,32 @@ Content Type | Model Used
 - Git & GitHub  
 - Google Colab (GPU support)
 
-🚀 **Run the Project Locally**
 
- 1️⃣ **Clone the Repository**
+## Run the Project Locally
+
+Follow the steps below to set up and run **ZUMBLEBOT** on your local machine.
+
+---
+
+### Step 1: Clone the Repository
 ```bash
 git clone https://github.com/Nandiniulisi/ZUMBLEBOT-Unified-Generative-AI-Platform.git
 cd ZUMBLEBOT-Unified-Generative-AI-Platform
 
-2️⃣ Create Virtual Environment
-python -m venv venv
-venv\Scripts\activate   # Windows
-source venv/bin/activate # Linux/Mac
-3️⃣ Install Dependencies
+Step 2: Create and Activate Virtual Environment
+-Windows
+	python -m venv venv
+	venv\Scripts\activate
+
+-Linux / macOS
+	python3 -m venv venv
+	source venv/bin/activate
+
+Step 3: Install Dependencies
 	pip install -r requirements.txt
-4️⃣ Start the Application
+
+Step 4: Start the Application
 	python app.py
-🔗 Open browser → http://127.0.0.1:5000/
+
+Open your browser and navigate to:
+http://127.0.0.1:5000/
