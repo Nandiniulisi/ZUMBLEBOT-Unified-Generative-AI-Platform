@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative AI Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, button {
+            margin-top: 5px;
+            padding: 10px;
+            font-size: 1em;
+        }
+        #chat {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            height: 500px;
+            overflow-y: auto;
+        }
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .message.user {
+            background-color: #e1ffc7;
+            text-align: right;
+        }
+        .message.ai {
+            background-color: #e1e1e1;
+        }
+        img, audio, video {
+            max-width: 100%;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Generative AI Interface</h1>
+    <form id="mediaForm">
+        <label for="prompt">Prompt:</label>
+        <input type="text" id="prompt" name="prompt" required>
+        <button type="submit">Generate</button>
+    </form>
+    <div id="chat"></div>
+
+    <script>
+        document.getElementById('mediaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const prompt = document.getElementById('prompt').value;
+
+            // Add user's message to the chat
+            const chat = document.getElementById('chat');
+            const userMessage = document.createElement('div');
+            userMessage.classList.add('message', 'user');
+            userMessage.innerText = `You: ${prompt}`;
+            chat.appendChild(userMessage);
+
+            fetch('/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt: prompt })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const aiMessage = document.createElement('div');
+                aiMessage.classList.add('message', 'ai');
+
+                const mediaType = data.media_type || 'text';
+
+                if (data.error) {
+                    aiMessage.innerText = `Error: ${data.error}`;
+                } else if (mediaType === 'text') {
+                    aiMessage.innerText = `AI: ${data.result}`;
+                } else if (mediaType === 'music') {
+                    const audio = document.createElement('audio');
+                    audio.controls = true;
+                    audio.src = data.result;
+                    aiMessage.appendChild(audio);
+                } else if (mediaType === 'image') {
+                    const img = document.createElement('img');
+                    img.src = data.result;
+                    aiMessage.appendChild(img);
+                } else if (mediaType === 'video') {
+                    const video = document.createElement('video');
+                    video.controls = true;
+                    video.src = data.result;
+                    aiMessage.appendChild(video);
+                } else {
+                    aiMessage.innerText = 'Unknown media type';
+                }
+
+                chat.appendChild(aiMessage);
+                chat.scrollTop = chat.scrollHeight;  // Scroll to the bottom
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const aiMessage = document.createElement('div');
+                aiMessage.classList.add('message', 'ai');
+                aiMessage.innerText = 'An error occurred while generating the content.';
+                chat.appendChild(aiMessage);
+                chat.scrollTop = chat.scrollHeight;  // Scroll to the bottom
+            });
+        });
+    </script>
+</body>
+</html>
